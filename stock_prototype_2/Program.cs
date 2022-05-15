@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows.Forms;
+using ScottPlot;
 
 namespace stock_prototype_2
 {
@@ -55,7 +57,9 @@ namespace stock_prototype_2
                 Console.WriteLine(stock.getPrice());
             }
 
-            Console.WriteLine("TEST DOEN");
+            Console.WriteLine("\nTEST DOEN\n");
+
+            //ScottPlot.Plot.AddScatter();
 
         }
     }
@@ -69,7 +73,7 @@ class Stock
     private double gaussianMean;    // gaussian dist. 의 평균
     private double gaussianStd;     // gaussian dist. 의 표준편차
     private int updateCount;        // 몇 번 update 되었는지 count
-    private int recordLength;       // 가격과 가중치를 몇 개까지 기억하여 (RNN에) 활용할 건지를 명시적으로 지정하는 변수.
+    private int recordLengthMAX;       // 가격과 가중치를 몇 개까지 기억하여 (RNN에) 활용할 건지를 명시적으로 지정하는 변수.
 
     /*/////////////////////////////////////////////////////////////////////
         void updateGaussian();      // Gaussian 랜덤 가중치만 사용한 업데이트
@@ -78,15 +82,15 @@ class Stock
         void update(double percent);  // percent 만큼 변동. ex). update(0.1) 은 가격의 10% 만큼 더 한다.
     *///////////////////////////////////////////////////////////////////////
 
-    public Stock(double initPrice, int recordLength)
+    public Stock(double initPrice, int recordLengthMAX)
     {
         this.price = initPrice; //입력받은 초기 가격
-        this.recordPrice = new double[recordLength];    // 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
+        this.recordPrice = new double[recordLengthMAX];    // 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
         this.recordPrice[0] = this.price;
-        this.recordWeight = new double[recordLength];// 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
+        this.recordWeight = new double[recordLengthMAX];// 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
         this.recordWeight[0] = 0;
         this.updateCount = 1;
-        this.recordLength = recordLength;
+        this.recordLengthMAX = recordLengthMAX;
 
         //standard gaussian dist.
         this.gaussianMean = 1;
@@ -102,30 +106,13 @@ class Stock
         this.price = this.price * newWeight;
 
         //아래는 recordPrice 업데이트. recordPrice의 length만큼의 최신 기록만 남긴다
-        if (this.updateCount == this.recordLength)
-        {
-            this.arrayRotate(ref this.recordPrice, -1);
-            this.recordPrice[this.recordLength - 1] = this.price;
-        }
-        else
-        {
-            this.recordPrice[this.updateCount] = this.price;
-        }
+        updateRecordPrice(this.price);
 
         //아래는 recordWeight 업데이트.
-        if (this.updateCount == this.recordLength)
-        {
-            this.arrayRotate(ref this.recordWeight, -1);
-            this.recordWeight[this.recordLength - 1] = newWeight;
-        }
-        else
-        {
-            this.recordWeight[this.updateCount] = newWeight;
-        }
+        updateRecordWeight(newWeight);
 
         //updateCount는 recordLength를 최댓값으로 갖는다.
-        if(this.updateCount < this.recordLength)
-            this.updateCount++;
+        this.updateCount++;
     }
 
     public void update(double weight)
@@ -134,30 +121,39 @@ class Stock
         this.price = this.price * weight;
 
         //아래는 recordPrice 업데이트. recordPrice의 length만큼의 최신 기록만 남긴다
-        if (this.updateCount >= this.recordLength)
-        {
-            this.arrayRotate(ref this.recordPrice, -1);
-            this.recordPrice[this.recordLength - 1] = this.price;
-        }
-        else
-        {
-            this.recordPrice[this.updateCount] = this.price;
-        }
+        updateRecordPrice(this.price);
 
         //아래는 recordWeight 업데이트.
-        if (this.updateCount >= this.recordLength)
+        updateRecordWeight(weight);
+
+        //updateCount는 recordLength를 최댓값으로 갖는다.
+        this.updateCount++;
+    }
+
+    private void updateRecordPrice(double newPrice)
+    {
+        if (this.updateCount >= this.recordLengthMAX)
         {
-            this.arrayRotate(ref this.recordWeight, -1);
-            this.recordWeight[this.recordLength - 1] = weight;
+            this.arrayRotate(ref this.recordPrice, -1);
+            this.recordPrice[this.recordLengthMAX - 1] = newPrice;
         }
         else
         {
-            this.recordWeight[this.updateCount] = weight;
+            this.recordPrice[this.updateCount] = newPrice;
         }
+    }
 
-        //updateCount는 recordLength를 최댓값으로 갖는다.
-        if (this.updateCount < this.recordLength)
-            this.updateCount++;
+    private void updateRecordWeight(double newWeight)
+    {
+        if (this.updateCount >= this.recordLengthMAX)
+        {
+            this.arrayRotate(ref this.recordWeight, -1);
+            this.recordWeight[this.recordLengthMAX - 1] = newWeight;
+        }
+        else
+        {
+            this.recordWeight[this.updateCount] = newWeight;
+        }
     }
 
     public void updateByRNNonPrice()//아마도 주식 가격에 적합할듯
