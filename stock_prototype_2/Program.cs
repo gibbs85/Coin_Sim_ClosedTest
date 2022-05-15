@@ -17,7 +17,7 @@ namespace stock_prototype_2
              */////////////////////////////////
 
             double price = 1500;
-            int nTimes = 10000;
+            int nTimes = 200;
             double Mean = 1.00001;
             double Std = 0.005;
 
@@ -27,39 +27,54 @@ namespace stock_prototype_2
 
             for (int i = 0; i < nTimes; i++)
             {
-                
-                //if (i == 5)
-                //    stock.setMean(1.1);
 
-                //if (i == 15)
-                //    stock.setMean(0.8);
-
-                //if (i == 20)
-                //{
-                //    stock.setMean(1.0);
-                //    stock.setStd(0.0);
-                //}
-
-                //if ( i == 25)
-                //{
-                //    stock.setMean(0.5);
-                //    stock.setStd(0.0);
-                //}
-
-                //if (i == 30)
-                //{
-                //    stock.setMean(2.0);
-                //    stock.setStd(0.0);
-                //}
-
-                //if (i == 35)
-                //{
-                //    stock.setMean(1.00001);
-                //    stock.setStd(0.005);
-                //}
+                if (i == 20)
+                {
+                    stock.setMean(1.1);
+                    stock.setStd(0.005);
+                }
+                if (i == 21)
+                {
+                    stock.setMean(0.995);
+                    stock.setStd(0.005);
+                }
+                if (i == 40)
+                {
+                    stock.setMean(1.1);
+                    stock.setStd(0.005);
+                }
+                if (i == 41)
+                {
+                    stock.setMean(0.995);
+                    stock.setStd(0.005);
+                }
+                if (i == 60)
+                {
+                    stock.setMean(1.1);
+                    stock.setStd(0.005);
+                }
+                if (i == 61)
+                {
+                    stock.setMean(0.995);
+                    stock.setStd(0.005);
+                }
+                if (i == 80)
+                {
+                    stock.setMean(1.1);
+                    stock.setStd(0.005);
+                }
+                if (i == 81)
+                {
+                    stock.setMean(0.995);
+                    stock.setStd(0.005);
+                }
+                if (i == 99)
+                {
+                    stock.setMean(1);
+                    stock.setStd(0.005);
+                }
 
                 stock.updateGaussian();
-                //Console.WriteLine(stock.getPrice());
             }
 
             Console.WriteLine("\nTEST DOEN\n");
@@ -73,7 +88,8 @@ namespace stock_prototype_2
              * 
             /*///////////////////////////////////////////////////////////////////////
 
-            string title = (nTimes).ToString() + " updates, m = " + (Mean).ToString() + ", s = " + (Std).ToString() + " ";
+            //string title = (nTimes).ToString() + " updates, m = " + (Mean).ToString() + ", s = " + (Std).ToString() + " ";
+            string title = (nTimes).ToString() + " updates, m = " + (Mean).ToString() + ", s = " + (Std).ToString() + " with control";
             string fileName = title + ".png";
 
             var plt = new ScottPlot.Plot(600, 400);
@@ -111,7 +127,7 @@ class Stock
         this.recordPrice = new double[recordLengthMAX];    // 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
         this.recordPrice[0] = this.price;
         this.recordWeight = new double[recordLengthMAX];// 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
-        this.recordWeight[0] = 0;
+        this.recordWeight[0] = 1;
         this.updateCount = 1;
         this.recordLengthMAX = recordLengthMAX;
 
