@@ -16,11 +16,12 @@ namespace stock_prototype_2
              * 1.000011,    0.005       steady. but, occasionally skies up in less then 10,000 times.
              */////////////////////////////////
 
+            double price = 1500;
             int nTimes = 10000;
             double Mean = 1.00001;
             double Std = 0.005;
 
-            Stock stock = new Stock(1500, nTimes);
+            Stock stock = new Stock(price, nTimes);
             stock.setMean(Mean);
             stock.setStd(Std);
 
@@ -67,6 +68,9 @@ namespace stock_prototype_2
              * 
              * Plotting과 png 파일 저장
              * 
+             * 
+             * png 파일 경로 : ...\bin\Debug\netcoreapp3.1\
+             * 
             /*///////////////////////////////////////////////////////////////////////
 
             string title = (nTimes).ToString() + " updates, m = " + (Mean).ToString() + ", s = " + (Std).ToString() + " ";
@@ -89,8 +93,8 @@ class Stock
     private double price;            // 가격
     public double[] recordPrice;    // 가격 기록
     private double[] recordWeight;   // 가중치(생성했던 gaussianNumber weight 기록)
-    private double gaussianMean;    // gaussian dist. 의 평균
-    private double gaussianStd;     // gaussian dist. 의 표준편차
+    private double gaussMean;    // gaussian dist. 의 평균
+    private double gaussStd;     // gaussian dist. 의 표준편차
     private int updateCount;        // 몇 번 update 되었는지 count
     private int recordLengthMAX;       // 가격과 가중치를 몇 개까지 기억하여 (RNN에) 활용할 건지를 명시적으로 지정하는 변수.
 
@@ -111,9 +115,8 @@ class Stock
         this.updateCount = 1;
         this.recordLengthMAX = recordLengthMAX;
 
-        //standard gaussian dist.
-        this.gaussianMean = 1;
-        this.gaussianStd = 0.005;
+        this.gaussMean = 1;
+        this.gaussStd = 0.005;
     }
 
 
@@ -207,7 +210,7 @@ class Stock
         double u2 = 1.0 - rand.NextDouble();
         double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
 
-        return this.gaussianStd * (randStdNormal) + this.gaussianMean;
+        return this.gaussStd * (randStdNormal) + this.gaussMean;
     }
 
     private void arrayRotate <T> (ref T[] array, int shiftCount)
@@ -243,11 +246,11 @@ class Stock
     }
     public void setMean(double mean)
     {
-        this.gaussianMean = mean;
+        this.gaussMean = mean;
     }
 
     public void setStd(double std)
     {
-        this.gaussianStd = std;
+        this.gaussStd = std;
     }
 }
