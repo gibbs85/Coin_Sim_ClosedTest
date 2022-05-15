@@ -69,7 +69,7 @@ namespace stock_prototype_2
              * Plotting과 png 파일 저장
              * 
              * 
-             * png 파일 경로 : ...\bin\Debug\netcoreapp3.1\
+             * 테스트 시 png 파일 경로 : ...\bin\Debug\netcoreapp3.1\
              * 
             /*///////////////////////////////////////////////////////////////////////
 
