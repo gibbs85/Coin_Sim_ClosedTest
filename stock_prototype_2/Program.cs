@@ -15,39 +15,39 @@ namespace stock_prototype_2
              */////////////////////////////////
 
             Stock stock = new Stock(1500, 8);
-            stock.setMean(0.00001);
+            stock.setMean(1.00001);
             stock.setStd(0.005);
 
             for (int i = 0; i < 50; i++)
             {
                 
                 if (i == 5)
-                    stock.setMean(0.1);
+                    stock.setMean(1.1);
 
                 if (i == 15)
-                    stock.setMean(-0.2);
+                    stock.setMean(0.8);
 
                 if (i == 20)
                 {
-                    stock.setMean(0.0);
+                    stock.setMean(1.0);
                     stock.setStd(0.0);
                 }
 
                 if ( i == 25)
                 {
-                    stock.setMean(-0.5);
+                    stock.setMean(0.5);
                     stock.setStd(0.0);
                 }
 
                 if (i == 30)
                 {
-                    stock.setMean(1);
+                    stock.setMean(2.0);
                     stock.setStd(0.0);
                 }
 
                 if (i == 35)
                 {
-                    stock.setMean(0.00001);
+                    stock.setMean(1.00001);
                     stock.setStd(0.005);
                 }
 
@@ -89,7 +89,7 @@ class Stock
         this.recordLength = recordLength;
 
         //standard gaussian dist.
-        this.gaussianMean = 0;
+        this.gaussianMean = 1;
         this.gaussianStd = 1;
     }
 
@@ -99,7 +99,7 @@ class Stock
     {
         double newWeight = this.gaussianNum();
 
-        this.price = this.price + this.price * newWeight;
+        this.price = this.price * newWeight;
 
         //아래는 recordPrice 업데이트. recordPrice의 length만큼의 최신 기록만 남긴다
         if (this.updateCount == this.recordLength)
@@ -131,7 +131,7 @@ class Stock
     public void update(double weight)
     {
 
-        this.price = this.price + this.price * weight;
+        this.price = this.price * weight;
 
         //아래는 recordPrice 업데이트. recordPrice의 length만큼의 최신 기록만 남긴다
         if (this.updateCount >= this.recordLength)
