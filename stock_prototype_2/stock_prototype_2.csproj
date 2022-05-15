@@ -5,4 +5,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ScottPlot.WinForms" Version="4.1.45" />
+  </ItemGroup>
+
 </Project>
