@@ -11,55 +11,74 @@ namespace stock_prototype_2
 
             /* ////////////////////////////////
              * 괜찮아보이는 값들 mean, std
-             * 0.0002,      0.005
-             * 0.00001,     0.005       steady. good upto 50,000 times. works for upto 1,000,000 times.
-             * 0.000011,    0.005       steady. but, occasionally skies up in less then 10,000 times.
+             * 1.0002,      0.005
+             * 1.00001,     0.005       steady. good upto 50,000 times. works for upto 1,000,000 times.
+             * 1.000011,    0.005       steady. but, occasionally skies up in less then 10,000 times.
              */////////////////////////////////
 
-            Stock stock = new Stock(1500, 8);
-            stock.setMean(1.00001);
-            stock.setStd(0.005);
+            int nTimes = 10000;
+            double Mean = 1.00001;
+            double Std = 0.005;
 
-            for (int i = 0; i < 50; i++)
+            Stock stock = new Stock(1500, nTimes);
+            stock.setMean(Mean);
+            stock.setStd(Std);
+
+            for (int i = 0; i < nTimes; i++)
             {
                 
-                if (i == 5)
-                    stock.setMean(1.1);
+                //if (i == 5)
+                //    stock.setMean(1.1);
 
-                if (i == 15)
-                    stock.setMean(0.8);
+                //if (i == 15)
+                //    stock.setMean(0.8);
 
-                if (i == 20)
-                {
-                    stock.setMean(1.0);
-                    stock.setStd(0.0);
-                }
+                //if (i == 20)
+                //{
+                //    stock.setMean(1.0);
+                //    stock.setStd(0.0);
+                //}
 
-                if ( i == 25)
-                {
-                    stock.setMean(0.5);
-                    stock.setStd(0.0);
-                }
+                //if ( i == 25)
+                //{
+                //    stock.setMean(0.5);
+                //    stock.setStd(0.0);
+                //}
 
-                if (i == 30)
-                {
-                    stock.setMean(2.0);
-                    stock.setStd(0.0);
-                }
+                //if (i == 30)
+                //{
+                //    stock.setMean(2.0);
+                //    stock.setStd(0.0);
+                //}
 
-                if (i == 35)
-                {
-                    stock.setMean(1.00001);
-                    stock.setStd(0.005);
-                }
+                //if (i == 35)
+                //{
+                //    stock.setMean(1.00001);
+                //    stock.setStd(0.005);
+                //}
 
                 stock.updateGaussian();
-                Console.WriteLine(stock.getPrice());
+                //Console.WriteLine(stock.getPrice());
             }
 
             Console.WriteLine("\nTEST DOEN\n");
 
-            //ScottPlot.Plot.AddScatter();
+            /*///////////////////////////////////////////////////////////////////////
+             * 
+             * Plotting과 png 파일 저장
+             * 
+            /*///////////////////////////////////////////////////////////////////////
+
+            string title = (nTimes).ToString() + " updates, m = " + (Mean).ToString() + ", s = " + (Std).ToString() + " ";
+            string fileName = title + ".png";
+
+            var plt = new ScottPlot.Plot(600, 400);
+            plt.XLabel("updates");
+            plt.YLabel("price");
+            plt.AddSignal(stock.recordPrice);
+            plt.Title(title);
+
+            plt.SaveFig(fileName);
 
         }
     }
@@ -68,7 +87,7 @@ namespace stock_prototype_2
 class Stock
 {
     private double price;            // 가격
-    private double[] recordPrice;    // 가격 기록
+    public double[] recordPrice;    // 가격 기록
     private double[] recordWeight;   // 가중치(생성했던 gaussianNumber weight 기록)
     private double gaussianMean;    // gaussian dist. 의 평균
     private double gaussianStd;     // gaussian dist. 의 표준편차
@@ -94,7 +113,7 @@ class Stock
 
         //standard gaussian dist.
         this.gaussianMean = 1;
-        this.gaussianStd = 1;
+        this.gaussianStd = 0.005;
     }
 
 
@@ -105,13 +124,10 @@ class Stock
 
         this.price = this.price * newWeight;
 
-        //아래는 recordPrice 업데이트. recordPrice의 length만큼의 최신 기록만 남긴다
+        //아래는 recordPrice, recordWeight 업데이트. recordPrice의 length만큼의 최신 기록만 남긴다
         updateRecordPrice(this.price);
-
-        //아래는 recordWeight 업데이트.
         updateRecordWeight(newWeight);
 
-        //updateCount는 recordLength를 최댓값으로 갖는다.
         this.updateCount++;
     }
 
@@ -120,13 +136,9 @@ class Stock
 
         this.price = this.price * weight;
 
-        //아래는 recordPrice 업데이트. recordPrice의 length만큼의 최신 기록만 남긴다
         updateRecordPrice(this.price);
-
-        //아래는 recordWeight 업데이트.
         updateRecordWeight(weight);
 
-        //updateCount는 recordLength를 최댓값으로 갖는다.
         this.updateCount++;
     }
 
@@ -209,11 +221,25 @@ class Stock
         array = backupArray;
     }
 
+    public double[] arrayMake(int nNumber)
+    {
+        double[] array = new double[nNumber];
+        for (int i=0; i<nNumber; i++)
+        {
+            array[i] = i + 1;
+        }
+        return array;
+    }
 
 
     public double getPrice()
     {
         return this.price;
+    }
+
+    public int getUpdateCount()
+    {
+        return this.updateCount;
     }
     public void setMean(double mean)
     {
