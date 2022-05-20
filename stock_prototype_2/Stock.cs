@@ -8,7 +8,7 @@ namespace StockDOGE
     {
         private string name;            // 이름
         private double price;            // 가격
-        public double[] recordPrice;    // 가격 기록
+        private double[] recordPrice;    // 가격 기록
         private double[] recordWeight;   // 가중치 기록
         private double gaussMean;    // gaussian dist. 의 평균
         private double gaussStd;     // gaussian dist. 의 표준편차
@@ -236,8 +236,12 @@ namespace StockDOGE
 
         public double[] getPriceRecord()
         {
-            double[] result = new double[this.updateCount];
-            for (int i=0; i<this.updateCount; i++)
+            int count = this.updateCount;
+            if (count > this.recordPrice.Length)
+                count = this.recordPrice.Length;
+
+            double[] result = new double[count];
+            for (int i=0; i<count; i++)
             {
                 result[i] = this.recordPrice[i];
             }

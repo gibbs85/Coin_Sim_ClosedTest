@@ -95,7 +95,7 @@ namespace StockDOGE
             var plt = new ScottPlot.Plot(600, 400);
             plt.XLabel("updates");
             plt.YLabel("price");
-            plt.AddSignal(stock.recordPrice);
+            plt.AddSignal(stock.getPriceRecord());
             plt.Title(title);
 
             plt.SaveFig(fileName);
