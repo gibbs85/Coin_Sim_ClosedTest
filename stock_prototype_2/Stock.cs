@@ -6,21 +6,47 @@ namespace StockDOGE
 {
     class Stock
     {
-        private string name;
+        private string name;            // 이름
         private double price;            // 가격
         public double[] recordPrice;    // 가격 기록
-        private double[] recordWeight;   // 가중치(생성했던 gaussianNumber weight 기록)
+        private double[] recordWeight;   // 가중치 기록
         private double gaussMean;    // gaussian dist. 의 평균
         private double gaussStd;     // gaussian dist. 의 표준편차
         private int updateCount;        // 몇 번 update 되었는지 count
         private int recordLengthMAX;       // 가격과 가중치를 몇 개까지 기억하여 (RNN에) 활용할 건지를 명시적으로 지정하는 변수.
 
         /*/////////////////////////////////////////////////////////////////////
-            void updateGaussian();      // Gaussian 랜덤 가중치만 사용한 업데이트
-            void updateByRNNonPrice();      // 가격 레코드를 RNN 하여 만든 예상치 * Gaussian 랜덤 가중치 사용하여 업데이트
-            void updateByRNNonWeight();      // (가중치 레코드를 RNN 하여 만든 예상치 + Gaussian 랜덤 가중치)/2 사용하여 업데이트
-            void update(double percent);  // percent 만큼 변동. ex). update(0.1) 은 가격의 10% 만큼 더 한다.
+         * 
+         * public functions are:
+         * 
+         *  void updateGaussian();      // 
+         *  void updateForced(double weight);  // 
+         *
+         *  string getName();
+         *  double getPrice();
+         *  double[] getPriceRecord();
+         *  double getMean();
+         *  double getStd();
+         *  
+         *  void setName(string newName);
+         *  void setMean(double newMean);
+         *  void setStd(double newStd);
+         *   
+         *  
         *///////////////////////////////////////////////////////////////////////
+
+        /*/////////////////////////////////////////////////////////////////////
+         * 2022/05/20
+         * NOTE.
+         * 
+         * 
+         * RNN functions are disabled(private).
+         * 
+         * made some private attributes those don't have getter/setter functions in general
+         *  to have them.
+         * 
+         *//////////////////////////////////////////////////////////////////////
+
 
         public Stock(double initPrice, int recordLengthMAX)
         {
@@ -58,6 +84,10 @@ namespace StockDOGE
         //RNN 없는 버전의 update
         public void updateGaussian()
         {
+            /* 
+             * Gaussian 랜덤 변수 가중치를 생성하여 다음 가격 업데이트
+             * 
+             */
             double newWeight = this.gaussianNum();
 
             this.price = this.price * newWeight;
@@ -69,8 +99,12 @@ namespace StockDOGE
             this.updateCount++;
         }
 
-        public void update(double weight)
+        public void updateForced(double weight)
         {
+            /*
+             * 인수로 받은 weight로 다음 가격 업데이트.
+             * 
+             */
 
             this.price = this.price * weight;
 
@@ -106,7 +140,7 @@ namespace StockDOGE
             }
         }
 
-        public void updateByRNNonPrice()//아마도 주식 가격에 적합할듯
+        private void updateByRNNonPrice()//아마도 주식 가격에 적합할듯
         {
             /*/////////////////////////////////////////////////////////////////////////
              * 
@@ -119,7 +153,7 @@ namespace StockDOGE
              *//////////////////////////////////////////////////////////////////////////
         }
 
-        public void updateByRNNonWeight()//아마도 코인 가격에 적합할듯
+        private void updateByRNNonWeight()//아마도 코인 가격에 적합할듯
         {
             /*//////////////////////////////////////////////////////////////////////////////////
              * 
@@ -139,13 +173,25 @@ namespace StockDOGE
         {
             /*/////////////////////////////////////////////////////////////////////////
              * 해당 객체의 gaussianMean과 gaussianStd를 가지는 gaussian dist. 를 확률밀도함수로 하는 랜덤 수를 리턴
+             * 
+             * 
              */////////////////////////////////////////////////////////////////////////
             Random rand = new Random();
             double u1 = 1.0 - rand.NextDouble();
             double u2 = 1.0 - rand.NextDouble();
             double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
 
-            return this.gaussStd * (randStdNormal) + this.gaussMean;
+            /*
+             * weight가 음수가 나오는 경우를 막기 위한 임시 방편
+             */
+            double result = this.gaussStd * (randStdNormal) + this.gaussMean;
+            if (result < 0)
+                result = 0;
+
+            return result;
+
+
+            //return this.gaussStd * (randStdNormal) + this.gaussMean;
         }
 
         private void arrayRotate<T>(ref T[] array, int shiftCount)
@@ -159,7 +205,7 @@ namespace StockDOGE
             array = backupArray;
         }
 
-        public double[] arrayMake(int nNumber)
+        private double[] arrayMake(int nNumber)
         {
             double[] array = new double[nNumber];
             for (int i = 0; i < nNumber; i++)
@@ -170,6 +216,10 @@ namespace StockDOGE
         }
 
 
+        /*
+         * below are the setter/getter functions.
+         */
+
         public double getPrice()
         {
             return this.price;
@@ -179,6 +229,31 @@ namespace StockDOGE
         {
             return this.updateCount;
         }
+        public string getName()
+        {
+            return this.name;
+        }
+
+        public double[] getPriceRecord()
+        {
+            double[] result = new double[this.updateCount];
+            for (int i=0; i<this.updateCount; i++)
+            {
+                result[i] = this.recordPrice[i];
+            }
+            return result;
+        }
+
+        public double getMean()
+        {
+            return this.gaussMean;
+        }
+
+        public double getStd()
+        {
+            return this.gaussStd;
+        }
+
         public void setMean(double mean)
         {
             this.gaussMean = mean;
@@ -194,9 +269,6 @@ namespace StockDOGE
             this.name = newName;
         }
 
-        public string getName()
-        {
-            return this.name;
-        }
+
     }
 }
