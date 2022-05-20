@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace stock_prototype_2
+namespace StockDOGE
 {
     class Stock
     {
