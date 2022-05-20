@@ -6,6 +6,7 @@ namespace StockDOGE
 {
     class Stock
     {
+        private string name;
         private double price;            // 가격
         public double[] recordPrice;    // 가격 기록
         private double[] recordWeight;   // 가중치(생성했던 gaussianNumber weight 기록)
@@ -33,6 +34,24 @@ namespace StockDOGE
 
             this.gaussMean = 1;
             this.gaussStd = 0.005;
+
+            this.name = "NONAME";
+        }
+
+        public Stock(string name, double initPrice, int recordLengthMAX)
+        {
+            this.price = initPrice; //입력받은 초기 가격
+            this.recordPrice = new double[recordLengthMAX];    // 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
+            this.recordPrice[0] = this.price;
+            this.recordWeight = new double[recordLengthMAX];// 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
+            this.recordWeight[0] = 1;
+            this.updateCount = 1;
+            this.recordLengthMAX = recordLengthMAX;
+
+            this.gaussMean = 1;
+            this.gaussStd = 0.005;
+
+            this.name = name;
         }
 
 
@@ -168,6 +187,16 @@ namespace StockDOGE
         public void setStd(double std)
         {
             this.gaussStd = std;
+        }
+
+        public void setName(string newName)
+        {
+            this.name = newName;
+        }
+
+        public string getName()
+        {
+            return this.name;
         }
     }
 }

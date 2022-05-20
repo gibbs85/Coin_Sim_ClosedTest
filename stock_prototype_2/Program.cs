@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using ScottPlot;
 
-namespace stock_prototype_2
+namespace StockDOGE
 {
     class Program
     {
