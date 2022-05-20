@@ -19,8 +19,8 @@ namespace StockDOGE
          * 
          * public functions are:
          * 
-         *  void updateGaussian();      // 
-         *  void updateForced(double weight);  // 
+         *  double updateGaussian();      // 
+         *  double updateForced(double weight);  // 
          *
          *  string getName();
          *  double getPrice();
@@ -44,6 +44,8 @@ namespace StockDOGE
          * 
          * made some private attributes those don't have getter/setter functions in general
          *  to have them.
+         * 
+         * changed the "update..." functions to return the updated values.
          * 
          *//////////////////////////////////////////////////////////////////////
 
@@ -82,7 +84,7 @@ namespace StockDOGE
 
 
         //RNN 없는 버전의 update
-        public void updateGaussian()
+        public double updateGaussian()
         {
             /* 
              * Gaussian 랜덤 변수 가중치를 생성하여 다음 가격 업데이트
@@ -97,9 +99,11 @@ namespace StockDOGE
             updateRecordWeight(newWeight);
 
             this.updateCount++;
+
+            return this.price;
         }
 
-        public void updateForced(double weight)
+        public double updateForced(double weight)
         {
             /*
              * 인수로 받은 weight로 다음 가격 업데이트.
@@ -112,6 +116,8 @@ namespace StockDOGE
             updateRecordWeight(weight);
 
             this.updateCount++;
+
+            return this.price;
         }
 
         private void updateRecordPrice(double newPrice)
