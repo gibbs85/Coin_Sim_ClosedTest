@@ -82,23 +82,6 @@ namespace StockDOGE
 
             this.name = "NONAME";
         }
-
-        public Stock(double initPrice)
-        {
-            this.price = initPrice;
-            this.recordPrice = new double[1];
-            this.recordPrice[0] = this.price;
-            this.recordWeight = new double[1];
-            this.recordWeight[0] = 1;
-            this.updateCount = 1;
-            this.recordLengthMAX = 1;
-
-            this.gaussMean = 1;
-            this.gaussStd = 0.005;
-
-            this.name = "NONAME";
-        }
-
         public Stock(string name, double initPrice)
         {
             this.price = initPrice;
@@ -115,6 +98,21 @@ namespace StockDOGE
             this.name = name;
         }
 
+        public Stock(double initPrice)
+        {
+            this.price = initPrice;
+            this.recordPrice = new double[1];
+            this.recordPrice[0] = this.price;
+            this.recordWeight = new double[1];
+            this.recordWeight[0] = 1;
+            this.updateCount = 1;
+            this.recordLengthMAX = 1;
+
+            this.gaussMean = 1;
+            this.gaussStd = 0.005;
+
+            this.name = "NONAME";
+        }
 
         //RNN 없는 버전의 update
         public double updateGaussian()
@@ -239,7 +237,7 @@ namespace StockDOGE
             double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
 
             /*
-             * weight가 음수가 나오는 경우를 막기 위한 임시 방편
+             * 잘못된 mean, std 설정 등으로 인해 weight가 음수가 나오는 경우를 막기 위한 dirty solution
              */
             double result = this.gaussStd * (randStdNormal) + this.gaussMean;
             if (result < 0)
