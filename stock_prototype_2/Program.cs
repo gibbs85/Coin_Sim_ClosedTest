@@ -17,67 +17,19 @@ namespace StockDOGE
              */////////////////////////////////
 
             double price = 1500;
-            int nTimes = 200;
-            double Mean = 1.00001;
+            int nTimes = 100;
+            double Mean = 1.01;
             double Std = 0.005;
 
-            Stock stock = new Stock(price, nTimes);
+            Stock stock = new Stock("연세전자", price, 100);
             stock.setMean(Mean);
             stock.setStd(Std);
 
-            for (int i = 0; i < nTimes; i++)
-            {
+            Console.WriteLine(stock.getPrice());
+            Console.WriteLine(stock.updateForced(1.1, 0.2));
+            Console.WriteLine(stock.getPrice());
 
-                if (i == 20)
-                {
-                    stock.setMean(1.1);
-                    stock.setStd(0.005);
-                }
-                if (i == 21)
-                {
-                    stock.setMean(0.995);
-                    stock.setStd(0.005);
-                }
-                if (i == 40)
-                {
-                    stock.setMean(1.1);
-                    stock.setStd(0.005);
-                }
-                if (i == 41)
-                {
-                    stock.setMean(0.995);
-                    stock.setStd(0.005);
-                }
-                if (i == 60)
-                {
-                    stock.setMean(1.1);
-                    stock.setStd(0.005);
-                }
-                if (i == 61)
-                {
-                    stock.setMean(0.995);
-                    stock.setStd(0.005);
-                }
-                if (i == 80)
-                {
-                    stock.setMean(1.1);
-                    stock.setStd(0.005);
-                }
-                if (i == 81)
-                {
-                    stock.setMean(0.995);
-                    stock.setStd(0.005);
-                }
-                if (i == 99)
-                {
-                    stock.setMean(1);
-                    stock.setStd(0.005);
-                }
-
-                stock.updateGaussian();
-            }
-
-            Console.WriteLine("\nTEST DOEN\n");
+            //Console.WriteLine("\nTEST DOEN\n");
 
             /*///////////////////////////////////////////////////////////////////////
              * 
