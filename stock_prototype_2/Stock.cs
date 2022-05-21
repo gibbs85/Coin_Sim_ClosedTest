@@ -19,8 +19,9 @@ namespace StockDOGE
          * 
          * public functions are:
          * 
-         *  double updateGaussian();      // 
-         *  double updateForced(double weight);  // 
+         *  double updateGaussian();      
+         *  double updateForced(double weight);  
+         *  double updateForced(double mean, double std)
          *
          *  string getName();
          *  double getPrice();
@@ -50,6 +51,22 @@ namespace StockDOGE
          *//////////////////////////////////////////////////////////////////////
 
 
+        public Stock(string name, double initPrice, int recordLengthMAX)
+        {
+            this.price = initPrice; //입력받은 초기 가격
+            this.recordPrice = new double[recordLengthMAX];    // 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
+            this.recordPrice[0] = this.price;
+            this.recordWeight = new double[recordLengthMAX];// 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
+            this.recordWeight[0] = 1;
+            this.updateCount = 1;
+            this.recordLengthMAX = recordLengthMAX;
+
+            this.gaussMean = 1;
+            this.gaussStd = 0.005;
+
+            this.name = name;
+        }
+
         public Stock(double initPrice, int recordLengthMAX)
         {
             this.price = initPrice; //입력받은 초기 가격
@@ -66,15 +83,31 @@ namespace StockDOGE
             this.name = "NONAME";
         }
 
-        public Stock(string name, double initPrice, int recordLengthMAX)
+        public Stock(double initPrice)
         {
-            this.price = initPrice; //입력받은 초기 가격
-            this.recordPrice = new double[recordLengthMAX];    // 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
+            this.price = initPrice;
+            this.recordPrice = new double[1];
             this.recordPrice[0] = this.price;
-            this.recordWeight = new double[recordLengthMAX];// 입력받은 recordLength만큼 기록을 남기고 RNN에 사용
+            this.recordWeight = new double[1];
             this.recordWeight[0] = 1;
             this.updateCount = 1;
-            this.recordLengthMAX = recordLengthMAX;
+            this.recordLengthMAX = 1;
+
+            this.gaussMean = 1;
+            this.gaussStd = 0.005;
+
+            this.name = "NONAME";
+        }
+
+        public Stock(string name, double initPrice)
+        {
+            this.price = initPrice;
+            this.recordPrice = new double[1];
+            this.recordPrice[0] = this.price;
+            this.recordWeight = new double[1];
+            this.recordWeight[0] = 1;
+            this.updateCount = 1;
+            this.recordLengthMAX = 1;
 
             this.gaussMean = 1;
             this.gaussStd = 0.005;
@@ -109,6 +142,24 @@ namespace StockDOGE
              * 인수로 받은 weight로 다음 가격 업데이트.
              * 
              */
+
+            this.price = this.price * weight;
+
+            updateRecordPrice(this.price);
+            updateRecordWeight(weight);
+
+            this.updateCount++;
+
+            return this.price;
+        }
+
+        public double updateForced(double mean, double std)
+        {
+            /*
+             * 인수로 받은 mean과 std로 gaussian 랜덤변수 생성하여 weight로 사용, 다음 가격 업데이트.
+             * 
+             */
+            double weight = this.gaussianNum(mean, std);
 
             this.price = this.price * weight;
 
@@ -198,6 +249,20 @@ namespace StockDOGE
 
 
             //return this.gaussStd * (randStdNormal) + this.gaussMean;
+        }
+
+        private double gaussianNum(double mean, double std)
+        {
+            Random rand = new Random();
+            double u1 = 1.0 - rand.NextDouble();
+            double u2 = 1.0 - rand.NextDouble();
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+
+            double result = std * (randStdNormal) + mean;
+            if (result < 0)
+                result = 0;
+
+            return result;
         }
 
         private void arrayRotate<T>(ref T[] array, int shiftCount)
