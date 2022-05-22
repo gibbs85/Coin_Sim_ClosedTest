@@ -14,6 +14,7 @@ namespace StockDOGE
         private double gaussStd;     // gaussian dist. 의 표준편차
         private int updateCount;        // 몇 번 update 되었는지 count
         private int recordLengthMAX;       // 가격과 가중치를 몇 개까지 기억하여 (RNN에) 활용할 건지를 명시적으로 지정하는 변수.
+        private string description;     // 종목 설명
 
         /*/////////////////////////////////////////////////////////////////////
          * 
@@ -65,6 +66,7 @@ namespace StockDOGE
             this.gaussStd = 0.005;
 
             this.name = name;
+            this.description = "NODESC";
         }
 
         public Stock(double initPrice, int recordLengthMAX)
@@ -81,6 +83,7 @@ namespace StockDOGE
             this.gaussStd = 0.005;
 
             this.name = "NONAME";
+            this.description = "NODESC";
         }
         public Stock(string name, double initPrice)
         {
@@ -96,6 +99,7 @@ namespace StockDOGE
             this.gaussStd = 0.005;
 
             this.name = name;
+            this.description = "NODESC";
         }
 
         public Stock(double initPrice)
@@ -112,6 +116,7 @@ namespace StockDOGE
             this.gaussStd = 0.005;
 
             this.name = "NONAME";
+            this.description = "NODESC";
         }
 
         //RNN 없는 버전의 update
@@ -342,6 +347,10 @@ namespace StockDOGE
             this.name = newName;
         }
 
+        public void setDesc(string description)
+        {
+            this.description = description;
+        }
 
     }
 }

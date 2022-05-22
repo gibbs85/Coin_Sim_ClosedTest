@@ -21,9 +21,9 @@ namespace StockDOGE
             double Mean = 1.01;
             double Std = 0.005;
 
-            Stock stock = new Stock("연세전자", price, 100);
-            stock.setMean(Mean);
-            stock.setStd(Std);
+            Stock stock = new Stock("연세전자", 1500, 100);
+            stock.setMean(1.01);
+            stock.setStd(0.005);
 
             Console.WriteLine(stock.getPrice());
             Console.WriteLine(stock.updateForced(1.1, 0.2));
