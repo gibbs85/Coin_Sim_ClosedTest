@@ -4,7 +4,7 @@ using System.Text;
 
 namespace StockDOGE
 {
-    class Stock
+    public class Stock
     {
         private string name;            // 이름
         private double price;            // 가격
